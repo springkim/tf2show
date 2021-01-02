@@ -2,13 +2,11 @@ import inspect
 import os
 import sys
 
-__version__ = '0.0.1'
-
 real_path = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 sys.path.append(real_path)
 
 try:
-    from tf2show.tf2show import tf2show
+    from tf2show.tf2show import *
 except ImportError as e:
     print(e, "Import Error")
     exit(1)

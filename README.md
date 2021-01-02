@@ -87,3 +87,23 @@ It's pretty. All names are printed.
 It also supports saving to Excel.
 
 This function can be useful when analyzing models.
+
+### Get a quick view of the hardware resources required for deep learning.
+```python
+import tf2show
+tf2show.hw4show()
+
+```
+
+#### `Linux`
+```
+CPU: Intel(R) Xeon(R) CPU @ 2.00GHz 2C/4T
+RAM: 15.64 GB
+GPU: Tesla P100-PCIE-16GB, 15.9 GB
+```
+#### `Windows`
+```
+CPU: Intel(R) Core(TM) i7-6950X CPU @ 3.00GHz 10C/20T
+RAM: 32.00 GB
+GPU: GeForce RTX 2080 Ti, 11.0 GB
+```

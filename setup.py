@@ -5,9 +5,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="tf2show",
-    version="0.0.3",
+    version="0.0.5",
     author="Bomm Kim",
-    author_email="aspringnode@gmail.com",
+    author_email="springnode@gmail.com",
     description="tf2show prints tensorflow2's keras model pretty.",
     long_description=long_description,
     long_description_content_type="text/markdown",

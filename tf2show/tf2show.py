@@ -1,5 +1,45 @@
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import tensorflow as tf
 import openpyxl
+import subprocess
+import sys
+
+
+def hw4show():
+    if sys.platform == "linux" or sys.platform == "linux2":
+        cpu_name = subprocess.check_output(f'lscpu | grep "Model name:"', shell=True).decode('utf-8').split(':')[1].strip()
+        cpu_core = subprocess.check_output(f'lscpu | grep "CPU(s):"', shell=True).decode('utf-8').split('\n')[0].split(':')[1].strip()
+        cpu_threads_per_core = subprocess.check_output(f'lscpu | grep "Thread(s) per core:"', shell=True).decode('utf-8').split(':')[1].strip()
+        print(f"CPU: {cpu_name} {cpu_core}C/{int(cpu_core) * int(cpu_threads_per_core)}T")
+        mem_size = subprocess.check_output(f'cat /proc/meminfo | grep "MemTotal:"', shell=True).decode('utf-8').split(':')[1].split()[0]
+        print(f"RAM: {int(mem_size) / 1024 / 1024:.2f} GB")
+    elif sys.platform == "win32":
+        cpu_name = subprocess.check_output(f'wmic cpu get name | findstr CPU"', shell=True).decode('utf-8').strip()
+        cpu_core = subprocess.check_output(f'wmic cpu get numberofcores', shell=True).decode('utf-8').split('\n')[1]
+        cpu_threads = os.environ["NUMBER_OF_PROCESSORS"]
+        print(f"CPU: {cpu_name} {int(cpu_core)}C/{int(cpu_threads)}T")
+        rams = subprocess.check_output(f'wmic memorychip get capacity', shell=True).decode('utf-8').split('\n')[1:-1]
+        rams = list(map(lambda x: x.strip("\r "), rams))
+        total_ram = 0
+        for ram in rams:
+            if len(ram) != 0:
+                total_ram += int(ram)
+        print(f"RAM: {int(total_ram) // 1024 // 1024 // 1024 :.2f} GB")
+
+    for device in tf.config.list_physical_devices('GPU'):
+        id = device.name.split(':')[-1]
+        infos = subprocess.check_output(f'nvidia-smi --query-gpu=name,memory.total --format=csv,noheader -i {id}',
+                                        shell=True).decode('utf-8').split(',')
+        print(f'GPU: {infos[0]}, {int(infos[1].split()[0]) / 1024:.1f} GB')
+
+
+"""
+CPU: Intel(R) Xeon(R) CPU @ 2.00GHz 2C/4T
+RAM: 15.64 GB
+GPU: Tesla P100-PCIE-16GB, 15.9 GB
+"""
 
 
 def tf2show(model, excel_file_name=""):
@@ -84,6 +124,8 @@ def tf2show(model, excel_file_name=""):
 
 
 if __name__ == "__main__":
+    hw4show()
+    sys.exit(0)
     models = [
         tf.keras.applications.DenseNet121,
         tf.keras.applications.DenseNet169,
